@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">RSR Pechhulp</string>
+    <string name="infoBtn">info</string>
+    <string name="title">Privacybeleid</string>
+    <string name="message">Om deze app te gebruiken, dient u het
+        privacybeleid teaccepteren</string>
 </resources>

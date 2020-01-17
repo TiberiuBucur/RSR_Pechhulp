@@ -6,7 +6,7 @@
         android:id="@+id/infoButton"
         android:enabled="true"
         android:icon="@drawable/main_btn_info"
-        android:title="info"
+        android:title="@string/infoBtn"
         android:visible="true"
         app:showAsAction="always" />
 </menu>
