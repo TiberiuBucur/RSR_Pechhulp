@@ -2,13 +2,17 @@ package DTT.rsrpechhulp.View;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Html;
+import android.text.method.LinkMovementMethod;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.TextView;
 
@@ -16,7 +20,8 @@ import DTT.rsrpechhulp.R;
 
 public class MainActivity extends AppCompatActivity implements MainMenu {
 
-    private TextView textView;
+    private TextView infoTitle;
+    private TextView infoMessage;
     private Button closeBtn;
 
     @Override
@@ -24,26 +29,12 @@ public class MainActivity extends AppCompatActivity implements MainMenu {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        textView = (TextView) findViewById(R.id.infoTV);
-        String title = getResources().getString(R.string.title);
-        String message = getResources().getString(R.string.message);
-        textView.setText(Html.fromHtml("<b>" + title + "</b><br />" + message));
-
-        Button mapBtn = (Button) findViewById(R.id.MapButton);
+        Button mapBtn = (Button) findViewById(R.id.mapButton);
         mapBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(MainActivity.this, MapActivity.class);
                 startActivity(intent);
-            }
-        });
-
-        closeBtn = (Button) findViewById(R.id.CloseButton);
-        closeBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                textView.setVisibility(View.GONE);
-                closeBtn.setVisibility(View.GONE);
             }
         });
     }
@@ -56,13 +47,39 @@ public class MainActivity extends AppCompatActivity implements MainMenu {
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item){
+    public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         if(id == R.id.infoButton){
-            textView.setVisibility(View.VISIBLE);
-            closeBtn.setVisibility(View.VISIBLE);
+            showDialog();
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void showDialog() {
+        final Dialog dialog = new Dialog(MainActivity.this);
+        dialog.setContentView(R.layout.info_layout);
+        Window window = dialog.getWindow();
+        window.setLayout(WindowManager.LayoutParams.MATCH_PARENT,
+                WindowManager.LayoutParams.WRAP_CONTENT);
+        dialog.show();
+
+        infoTitle = (TextView) dialog.findViewById(R.id.titleTV);
+        String title = getResources().getString(R.string.title);
+        infoTitle.setText(Html.fromHtml("<b>" + title + "</b>")); //the title is bold
+
+        String message = getResources().getString(R.string.message);
+        infoMessage = (TextView) dialog.findViewById(R.id.messageTV);
+        infoMessage.setClickable(true);
+        infoMessage.setMovementMethod(LinkMovementMethod.getInstance());
+        
+        closeBtn = (Button) dialog.findViewById(R.id.closeButton);
+        closeBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+
     }
 
     public void loadPhone(){
