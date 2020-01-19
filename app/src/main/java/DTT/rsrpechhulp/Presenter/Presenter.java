@@ -1,12 +1,29 @@
 package DTT.rsrpechhulp.Presenter;
 
-import DTT.rsrpechhulp.Model.User;
+import android.util.DisplayMetrics;
 
-public class Presenter {
+import java.io.Serializable;
+
+import DTT.rsrpechhulp.Model.User;
+import DTT.rsrpechhulp.View.UI;
+
+public class Presenter implements Serializable {
 
     private User user;
 
-    public Presenter(boolean isPhone){
-        user = new User(isPhone);
+    public Presenter(int screenWidth, int screenHeight, double densityDpi) {
+        user = new User(screenWidth, screenHeight, densityDpi);
+    }
+
+    public void loadUI(UI menu) {
+        if (user.isTablet()) {
+            menu.loadTablet();
+        } else {
+            menu.loadPhone();
+        }
+    }
+
+    public int getDialogWidth() {
+        return user.getDialogWidth();
     }
 }

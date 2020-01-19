@@ -1,7 +1,8 @@
 
 package DTT.rsrpechhulp.View;
 
-public interface MainMenu {
+public interface UI {
+
     void loadPhone();
     void loadTablet();
 }

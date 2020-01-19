@@ -7,9 +7,10 @@
     tools:context=".View.SplashScreen">
 
     <ImageView
-        android:id="@+id/imageView"
-        android:layout_width="325dp"
-        android:layout_height="267dp"
+        android:id="@+id/splashLogo"
+        android:layout_width="333dp"
+        android:layout_height="255dp"
+        android:contentDescription="@string/car_logo"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.497"
@@ -19,14 +20,15 @@
         app:srcCompat="@drawable/splash_logo" />
 
     <ImageView
-        android:id="@+id/imageView2"
+        android:id="@+id/splashLogoRSR"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:contentDescription="@string/logo"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imageView"
+        app:layout_constraintTop_toBottomOf="@+id/splashLogo"
         app:layout_constraintVertical_bias="0.915"
         app:srcCompat="@drawable/splash_logo_rsr" />
 </androidx.constraintlayout.widget.ConstraintLayout>

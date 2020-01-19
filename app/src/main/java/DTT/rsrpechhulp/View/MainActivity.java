@@ -16,13 +16,17 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.TextView;
 
+import DTT.rsrpechhulp.Presenter.Presenter;
 import DTT.rsrpechhulp.R;
 
-public class MainActivity extends AppCompatActivity implements MainMenu {
+public class MainActivity extends AppCompatActivity implements UI {
 
-    private TextView infoTitle;
-    private TextView infoMessage;
-    private Button closeBtn;
+    private Presenter presenter;
+    private int menuId; // to change between phone and tablet menu
+    // allows flexibility for future development of the UIs
+    //alternatively I could have deleted the infoButton from the menu
+    // in the loadTablet method through an OnPrepareOptionsMenu method
+    private int dialogWidth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,15 +38,20 @@ public class MainActivity extends AppCompatActivity implements MainMenu {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(MainActivity.this, MapActivity.class);
+                intent.putExtra("presenter", presenter);
                 startActivity(intent);
             }
         });
+
+        presenter = (Presenter) getIntent().getSerializableExtra("presenter");
+        dialogWidth = presenter.getDialogWidth();
+        presenter.loadUI(this);
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater menuInflater = getMenuInflater();
-        menuInflater.inflate(R.menu.main, menu);
+        menuInflater.inflate(menuId, menu);
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -59,20 +68,19 @@ public class MainActivity extends AppCompatActivity implements MainMenu {
         final Dialog dialog = new Dialog(MainActivity.this);
         dialog.setContentView(R.layout.info_layout);
         Window window = dialog.getWindow();
-        window.setLayout(WindowManager.LayoutParams.MATCH_PARENT,
-                WindowManager.LayoutParams.WRAP_CONTENT);
+        window.setLayout(dialogWidth, WindowManager.LayoutParams.WRAP_CONTENT);
         dialog.show();
 
-        infoTitle = (TextView) dialog.findViewById(R.id.titleTV);
+        TextView infoTitle = (TextView) dialog.findViewById(R.id.titleTV);
         String title = getResources().getString(R.string.title);
         infoTitle.setText(Html.fromHtml("<b>" + title + "</b>")); //the title is bold
 
         String message = getResources().getString(R.string.message);
-        infoMessage = (TextView) dialog.findViewById(R.id.messageTV);
+        TextView infoMessage = (TextView) dialog.findViewById(R.id.messageTV);
         infoMessage.setClickable(true);
         infoMessage.setMovementMethod(LinkMovementMethod.getInstance());
-        
-        closeBtn = (Button) dialog.findViewById(R.id.closeButton);
+
+        Button closeBtn = (Button) dialog.findViewById(R.id.closeButton);
         closeBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -83,11 +91,18 @@ public class MainActivity extends AppCompatActivity implements MainMenu {
     }
 
     public void loadPhone(){
-
+        menuId = R.menu.main;
     }
 
     public void loadTablet(){
-
+        menuId = R.menu.main2;
+        Button infoBtn = (Button) findViewById(R.id.infoButton);
+        infoBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showDialog();
+            }
+        });
     }
 
 }

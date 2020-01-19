@@ -4,4 +4,6 @@
     <string name="title">Privacybeleid</string>
     <string name="message">Om deze app te gebruiken, dient u het <a href='http://www.rsr.nl/index.php?page=privacy-wetgeving'>privacybeleid</a> te accepteren.</string>
     <string name="close">Bevestig</string>
+    <string name="logo">RSR logo</string>
+    <string name="car_logo">RSR car logo</string>
 </resources>
