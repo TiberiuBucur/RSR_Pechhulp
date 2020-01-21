@@ -1,7 +1,6 @@
 package DTT.rsrpechhulp.View;
 
 import androidx.appcompat.app.AppCompatActivity;
-
 import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;

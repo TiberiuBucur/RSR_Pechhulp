@@ -6,4 +6,7 @@
     <string name="close">Bevestig</string>
     <string name="logo">RSR logo</string>
     <string name="car_logo">RSR car logo</string>
+    <string name="ring_phone">Bel RSR nu</string>
+    <string name="app_icon_name">RSR</string>
+    <string name="main_label">RSR Revalidatieservice</string>
 </resources>
