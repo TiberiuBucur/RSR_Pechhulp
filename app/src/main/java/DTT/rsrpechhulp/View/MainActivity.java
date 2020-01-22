@@ -68,13 +68,7 @@ public class MainActivity extends AppCompatActivity implements UI {
         dialog.setContentView(R.layout.info_layout);
         Window window = dialog.getWindow();
         window.setLayout(dialogWidth, WindowManager.LayoutParams.WRAP_CONTENT);
-        dialog.show();
 
-        TextView infoTitle = (TextView) dialog.findViewById(R.id.titleTV);
-        String title = getResources().getString(R.string.title);
-        infoTitle.setText(Html.fromHtml("<b>" + title + "</b>")); //the title is bold
-
-        String message = getResources().getString(R.string.message);
         TextView infoMessage = (TextView) dialog.findViewById(R.id.messageTV);
         infoMessage.setClickable(true);
         infoMessage.setMovementMethod(LinkMovementMethod.getInstance());
@@ -87,6 +81,7 @@ public class MainActivity extends AppCompatActivity implements UI {
             }
         });
 
+        dialog.show();
     }
 
     public void loadPhone(){

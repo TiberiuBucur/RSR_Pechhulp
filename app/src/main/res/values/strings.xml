@@ -9,4 +9,6 @@
     <string name="ring_phone">Bel RSR nu</string>
     <string name="app_icon_name">RSR</string>
     <string name="main_label">RSR Revalidatieservice</string>
+    <string name="location_title">Uw Locatie</string>
+    <string name="write_down_location">Onthoud deze locatie voor het telefoongesprek.</string>
 </resources>
