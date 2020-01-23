@@ -26,4 +26,8 @@ public class Presenter implements Serializable {
     public int getDialogWidth() {
         return user.getDialogWidth();
     }
+
+    public int getCallDialogWidth() {
+        return user.getCallDialogWidth();
+    }
 }

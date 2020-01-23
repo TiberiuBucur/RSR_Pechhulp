@@ -32,7 +32,7 @@ public class MainActivity extends AppCompatActivity implements UI {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Button mapBtn = (Button) findViewById(R.id.mapButton);
+        Button mapBtn = (Button) findViewById(R.id.map_button);
         mapBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -73,7 +73,7 @@ public class MainActivity extends AppCompatActivity implements UI {
         infoMessage.setClickable(true);
         infoMessage.setMovementMethod(LinkMovementMethod.getInstance());
 
-        Button closeBtn = (Button) dialog.findViewById(R.id.closeButton);
+        Button closeBtn = (Button) dialog.findViewById(R.id.close_button);
         closeBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

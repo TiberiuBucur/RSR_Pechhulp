@@ -5,4 +5,6 @@
     <color name="colorAccent">#D81B60</color>
     <color name="hyperlink">#009788</color>
     <color name="textColor">#212121</color>
+    <color name="callDialogColor">#ACB21E</color>
+    <color name="transparent">#00000000</color>
 </resources>

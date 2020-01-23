@@ -4,14 +4,21 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import android.Manifest;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.text.Layout;
+import android.view.Gravity;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -28,6 +35,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
 
+import DTT.rsrpechhulp.Presenter.Presenter;
 import DTT.rsrpechhulp.R;
 
 public class MapActivity extends AppCompatActivity implements UI {
@@ -35,8 +43,10 @@ public class MapActivity extends AppCompatActivity implements UI {
     private GoogleMap map;
     private MapView mapView;
     private LocationManager locationManager;
+    private Presenter presenter;
+    private Button ringButton;
 
-    private static final int LOCATION_CAMERA_ZOOM = 18;
+    private static final int LOCATION_CAMERA_ZOOM = 16;
 
     private static final String[] PERMS={
             Manifest.permission.ACCESS_COARSE_LOCATION,
@@ -50,9 +60,20 @@ public class MapActivity extends AppCompatActivity implements UI {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_map);
 
+        presenter = (Presenter) getIntent().getSerializableExtra("presenter") ;
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
+
+        ringButton = (Button) findViewById(R.id.ring_button);
+        ringButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ringButton.setVisibility(View.GONE);
+                showCallDialog();
+            }
+        });
 
         Button backBtn = (Button) findViewById(R.id.back_button);
         backBtn.setOnClickListener(new View.OnClickListener() {
@@ -83,6 +104,29 @@ public class MapActivity extends AppCompatActivity implements UI {
                 }
             }
         });
+    }
+
+    private void showCallDialog() {
+        final Dialog dialog = new Dialog(this);
+        dialog.setContentView(R.layout.call_dialog);
+        Window window = dialog.getWindow();
+        window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        WindowManager.LayoutParams params = window.getAttributes();
+        params.gravity = Gravity.BOTTOM;
+        window.setAttributes(params);
+        window.setLayout(presenter.getCallDialogWidth(), Toolbar.LayoutParams.WRAP_CONTENT);
+
+        Button callBtn = (Button) dialog.findViewById(R.id.call_button);
+        Button closeBtn = (Button) dialog.findViewById(R.id.close_dialog_button);
+        closeBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ringButton.setVisibility(View.VISIBLE);
+                dialog.dismiss();
+            }
+        });
+
+        dialog.show();
     }
 
     private void drawMarker(Location location) {
@@ -155,4 +199,5 @@ public class MapActivity extends AppCompatActivity implements UI {
     public void loadTablet() {
 
     }
+
 }

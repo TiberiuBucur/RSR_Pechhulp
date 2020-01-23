@@ -11,4 +11,8 @@
     <string name="main_label">RSR Revalidatieservice</string>
     <string name="location_title">Uw Locatie</string>
     <string name="write_down_location">Onthoud deze locatie voor het telefoongesprek.</string>
+    <string name="cancel">Annuleren</string>
+    <string name="call_dialog_title">Belkosten</string>
+    <string name="call_dialog_text">Voor dit nummer betaalt u uw gebruikelijke belkosten.</string>
+    <string name="call_text">Bel nu</string>
 </resources>

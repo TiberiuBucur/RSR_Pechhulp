@@ -5,11 +5,10 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".View.MainActivity"
-    android:background="@drawable/main_bg"
-    android:theme="@style/AppTheme">
+    android:background="@drawable/main_bg">
 
     <Button
-        android:id="@+id/mapButton"
+        android:id="@+id/map_button"
         android:layout_width="265dp"
         android:layout_height="43dp"
         android:background="@color/colorPrimary"
