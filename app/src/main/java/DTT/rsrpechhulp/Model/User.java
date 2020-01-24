@@ -15,12 +15,12 @@ public class User implements Serializable {
     private static final float TABLET_WIDTH_PERCENTAGE = 0.7f;
     private static final float CALL_DIALOG_WIDTH_PERCENTAGE = 0.65f;
 
-    public User(int screenWidth, int screenHeight, double densityDpi){
+    public User(int screenWidth, int screenHeight, double densityDpi) {
         this.screenWidth = screenWidth;
         this.screenHeight = screenHeight;
         this.densityDpi = densityDpi;
         isTablet = checkIsTablet();
-        if(isTablet) {
+        if (isTablet) {
             widthPercentage = TABLET_WIDTH_PERCENTAGE;
         } else {
             widthPercentage = PHONE_WIDTH_PERCENTAGE;
@@ -34,7 +34,7 @@ public class User implements Serializable {
         //calculating the screen diagonal in inches and comparing to 7
     }
 
-    public int getDialogWidth(){
+    public int getDialogWidth() {
         return (int) (screenWidth * widthPercentage);
     }
 
@@ -42,7 +42,7 @@ public class User implements Serializable {
         return (int) (screenWidth * CALL_DIALOG_WIDTH_PERCENTAGE);
     }
 
-    public boolean isTablet(){
+    public boolean isTablet() {
         return isTablet;
     }
 }

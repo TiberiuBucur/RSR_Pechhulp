@@ -15,4 +15,10 @@
     <string name="call_dialog_title">Belkosten</string>
     <string name="call_dialog_text">Voor dit nummer betaalt u uw gebruikelijke belkosten.</string>
     <string name="call_text">Bel nu</string>
+    <string name="phone_number">+319007788990</string>
+    <string name="no_gps_title">GPS uitgeschakeld</string>
+    <string name="no_gps_message">Uw GPS is uitgeschakeld.Schakel het alstublieft in om door te gaan.</string>
+    <string name="no_internet_title">Netwerk is uitgeschakeld</string>
+    <string name="no_internet_message">Uw netwerk is uitgeschakeld.Schakel het alstublieft in om door te gaan.</string>
+    <string name="activate">Aanzetten</string>
 </resources>

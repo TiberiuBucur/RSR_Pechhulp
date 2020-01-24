@@ -1,6 +1,7 @@
 package DTT.rsrpechhulp.View;
 
 import androidx.appcompat.app.AppCompatActivity;
+
 import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
@@ -57,7 +58,7 @@ public class MainActivity extends AppCompatActivity implements UI {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
-        if(id == R.id.infoButton){
+        if (id == R.id.infoButton) {
             showDialog();
         }
         return super.onOptionsItemSelected(item);
@@ -84,11 +85,11 @@ public class MainActivity extends AppCompatActivity implements UI {
         dialog.show();
     }
 
-    public void loadPhone(){
+    public void loadPhone() {
         menuId = R.menu.main;
     }
 
-    public void loadTablet(){
+    public void loadTablet() {
         menuId = R.menu.main2;
         Button infoBtn = (Button) findViewById(R.id.infoButton);
         infoBtn.setOnClickListener(new View.OnClickListener() {
