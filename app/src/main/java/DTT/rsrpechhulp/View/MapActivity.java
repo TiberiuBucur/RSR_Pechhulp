@@ -122,10 +122,10 @@ public class MapActivity extends AppCompatActivity implements UI, OnMapReadyCall
             @Override
             public void onReceive(Context context, Intent intent) {
                 if (!internetEnabled()) {
-                    if(internetDialog == null || !internetDialog.isShowing()){
+                    if(!isDialogActive(internetDialog)){
                         showWarningDialog(REQUEST_INTERNET);
                     }
-                } else if(internetDialog != null && internetDialog.isShowing()) {
+                } else if(isDialogActive(internetDialog)) {
                     internetDialog.dismiss();
                 }
             }
@@ -137,10 +137,10 @@ public class MapActivity extends AppCompatActivity implements UI, OnMapReadyCall
             @Override
             public void onReceive(Context context, Intent intent) {
                 if(!gpsEnabled()) {
-                    if(locationDialog == null || !locationDialog.isShowing()) {
+                    if(!isDialogActive(locationDialog)) {
                         showWarningDialog(REQUEST_LOCATION);
                     }
-                } else if(locationDialog != null && locationDialog.isShowing()) {
+                } else if(isDialogActive(locationDialog)) {
                     locationDialog.dismiss();
                 }
             }
@@ -228,10 +228,10 @@ public class MapActivity extends AppCompatActivity implements UI, OnMapReadyCall
 
     @Override
     protected void onResume() {
-        if(!gpsEnabled() && (locationDialog == null || !locationDialog.isShowing())) {
+        if(!gpsEnabled() && !isDialogActive(locationDialog)) {
             showWarningDialog(REQUEST_LOCATION);
         }
-        if (!internetEnabled() && (internetDialog == null || !internetDialog.isShowing())) {
+        if (!internetEnabled() && !isDialogActive(internetDialog)) {
             showWarningDialog(REQUEST_INTERNET);
         }
         if(map == null){
@@ -265,6 +265,10 @@ public class MapActivity extends AppCompatActivity implements UI, OnMapReadyCall
     protected void onStop() {
         mapView.onStop();
         super.onStop();
+    }
+
+    private boolean isDialogActive(Dialog dialog) {
+        return dialog != null && dialog.isShowing();
     }
 
     private void showWarningDialog(int requestCode) {

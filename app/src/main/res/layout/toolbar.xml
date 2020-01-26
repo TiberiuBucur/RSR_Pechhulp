@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.appcompat.widget.Toolbar xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/colorPrimary"
-    android:elevation="4dp">
+    android:background="@drawable/main_btn_bg"
+    android:elevation="4dp"
+    app:contentInsetStart="0dp">
 
     <Button
         android:layout_width="wrap_content"
@@ -11,12 +13,14 @@
         android:id="@+id/back_button"
         android:text="@string/app_name"
         android:textSize="18sp"
-        android:background="@android:color/transparent"
+        android:background="@drawable/toolbar_back_button"
         android:textColor="@android:color/white"
         android:textAllCaps="false"
         android:drawableLeft="@drawable/menu_arrow"
-        android:drawablePadding="10dp"
-        android:typeface="sans">
+        android:drawablePadding="13dp"
+        android:typeface="sans"
+        android:paddingEnd="15dp"
+        android:paddingStart="15dp">
 
     </Button>
 

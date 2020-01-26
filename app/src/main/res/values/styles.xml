@@ -21,6 +21,7 @@
 
     <style name="ActionBarStyle" parent="@style/Widget.AppCompat.Light.ActionBar.Solid">
         <item name="titleTextStyle">@style/TextStyle</item>
+        <item name="background">@drawable/main_btn_bg</item>
     </style>
 
     <style name="TextStyle" parent="@style/TextAppearance.AppCompat.Widget.ActionBar.Title">

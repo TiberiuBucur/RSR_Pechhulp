@@ -11,7 +11,7 @@
         android:id="@+id/map_button"
         android:layout_width="265dp"
         android:layout_height="43dp"
-        android:background="@color/colorPrimary"
+        android:background="@drawable/main_btn_bg"
         android:drawableLeft="@drawable/main_btn_warning"
         android:drawablePadding="-15dp"
         android:paddingLeft="16dp"
