@@ -89,19 +89,11 @@ public class MapActivity extends AppCompatActivity implements UI, OnMapReadyCall
         setContentView(R.layout.activity_map);
 
         presenter = (Presenter) getIntent().getSerializableExtra("presenter");
+        presenter.loadUI(this);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
-
-        ringButton = (Button) findViewById(R.id.ring_button);
-        ringButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                ringButton.setVisibility(View.GONE);
-                showCallDialog();
-            }
-        });
 
         Button backBtn = (Button) findViewById(R.id.back_button);
         backBtn.setOnClickListener(new View.OnClickListener() {
@@ -391,7 +383,14 @@ public class MapActivity extends AppCompatActivity implements UI, OnMapReadyCall
     }
 
     public void loadPhone() {
-
+        ringButton = (Button) findViewById(R.id.ring_button);
+        ringButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ringButton.setVisibility(View.GONE);
+                showCallDialog();
+            }
+        });
     }
 
     public void loadTablet() {

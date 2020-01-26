@@ -6,11 +6,11 @@ import java.io.Serializable;
 
 public class User implements Serializable {
 
-    private boolean isTablet;
-    private int screenWidth;
-    private double densityDpi;
-    private int screenHeight;
-    private float widthPercentage;
+    private final boolean isTablet;
+    private final int screenWidth;
+    private final double densityDpi;
+    private final int screenHeight;
+    private final float widthPercentage;
     private static final float PHONE_WIDTH_PERCENTAGE = 0.9f;
     private static final float TABLET_WIDTH_PERCENTAGE = 0.7f;
     private static final float CALL_DIALOG_WIDTH_PERCENTAGE = 0.65f;
@@ -27,13 +27,6 @@ public class User implements Serializable {
         }
     }
 
-    private boolean checkIsTablet() {
-        double widthInches = screenWidth / densityDpi;
-        double heightInches = screenHeight / densityDpi;
-        return Math.sqrt(Math.pow(widthInches, 2) + Math.pow(heightInches, 2)) > 7.0;
-        //calculating the screen diagonal in inches and comparing to 7
-    }
-
     public int getDialogWidth() {
         return (int) (screenWidth * widthPercentage);
     }
@@ -44,5 +37,12 @@ public class User implements Serializable {
 
     public boolean isTablet() {
         return isTablet;
+    }
+
+    private boolean checkIsTablet() {
+        double widthInches = screenWidth / densityDpi;
+        double heightInches = screenHeight / densityDpi;
+        return Math.sqrt(Math.pow(widthInches, 2) + Math.pow(heightInches, 2)) > 7.0;
+        //calculating the screen diagonal in inches and comparing to 7
     }
 }

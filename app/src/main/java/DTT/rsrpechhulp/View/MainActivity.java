@@ -58,7 +58,7 @@ public class MainActivity extends AppCompatActivity implements UI {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
-        if (id == R.id.infoButton) {
+        if (id == R.id.info_button) {
             showDialog();
         }
         return super.onOptionsItemSelected(item);
@@ -91,7 +91,7 @@ public class MainActivity extends AppCompatActivity implements UI {
 
     public void loadTablet() {
         menuId = R.menu.main2;
-        Button infoBtn = (Button) findViewById(R.id.infoButton);
+        Button infoBtn = (Button) findViewById(R.id.info_button);
         infoBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
