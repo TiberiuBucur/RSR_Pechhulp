@@ -6,6 +6,8 @@ import java.io.Serializable;
 
 public class User implements Serializable {
 
+    //all these fields are usfeul for determining the size of the widgetin an UI
+    //as they differ depending on the type of device (phone or tablet)
     private final boolean isTablet;
     private final int screenWidth;
     private final double densityDpi;
@@ -27,10 +29,13 @@ public class User implements Serializable {
         }
     }
 
+    //the width for the privacy dialog, as well as the internet and location dialogs
+    //from the map activity
     public int getDialogWidth() {
         return (int) (screenWidth * widthPercentage);
     }
 
+    //similarly for the calling dialog in the map activity
     public int getCallDialogWidth() {
         return (int) (screenWidth * CALL_DIALOG_WIDTH_PERCENTAGE);
     }
@@ -39,6 +44,8 @@ public class User implements Serializable {
         return isTablet;
     }
 
+    //this method calculates the diagonal of the screen in inches and compares it to 7
+    //if it is greater than 7, the device is a tablet
     private boolean checkIsTablet() {
         double widthInches = screenWidth / densityDpi;
         double heightInches = screenHeight / densityDpi;

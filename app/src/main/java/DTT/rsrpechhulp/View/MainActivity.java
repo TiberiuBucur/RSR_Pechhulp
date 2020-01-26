@@ -33,7 +33,8 @@ public class MainActivity extends AppCompatActivity implements UI {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Button mapBtn = (Button) findViewById(R.id.map_button);
+        Button mapBtn = (Button) findViewById(R.id.map_button);//the button which takes us
+        //to the map activity
         mapBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -48,6 +49,8 @@ public class MainActivity extends AppCompatActivity implements UI {
         presenter.loadUI(this);
     }
 
+    //this method inflates (integrates) the menu in the activity
+    //useful for customizing the toolbar
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater menuInflater = getMenuInflater();
@@ -55,6 +58,7 @@ public class MainActivity extends AppCompatActivity implements UI {
         return super.onCreateOptionsMenu(menu);
     }
 
+    //this adds an on click listener to the info button
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
@@ -64,11 +68,13 @@ public class MainActivity extends AppCompatActivity implements UI {
         return super.onOptionsItemSelected(item);
     }
 
+    //shows the dialog with the privacy terms
     private void showDialog() {
         final Dialog dialog = new Dialog(MainActivity.this);
         dialog.setContentView(R.layout.info_layout);
         Window window = dialog.getWindow();
-        window.setLayout(dialogWidth, WindowManager.LayoutParams.WRAP_CONTENT);
+        window.setLayout(dialogWidth, WindowManager.LayoutParams.WRAP_CONTENT);//setting the
+        // dimensions of the dialog, depending on the type of device
 
         TextView infoMessage = (TextView) dialog.findViewById(R.id.messageTV);
         infoMessage.setClickable(true);
@@ -91,7 +97,7 @@ public class MainActivity extends AppCompatActivity implements UI {
 
     public void loadTablet() {
         menuId = R.menu.main2;
-        Button infoBtn = (Button) findViewById(R.id.info_button);
+        Button infoBtn = (Button) findViewById(R.id.info_button);//this button is only for tablets
         infoBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

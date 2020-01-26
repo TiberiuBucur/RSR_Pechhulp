@@ -62,9 +62,9 @@ public class MapActivity extends AppCompatActivity implements UI, OnMapReadyCall
     private ConnectivityManager connectivityManager;
     private Presenter presenter;
     private Button ringButton;
-    private FusedLocationProviderClient client;
-    private LocationRequest locationRequest;
-    private LocationCallback locationCallback;
+    private FusedLocationProviderClient client;//we need the client, the location request and
+    private LocationRequest locationRequest;//the location callback for updates of the location
+    private LocationCallback locationCallback;//in real time
     private Location lastLocation;
     private Dialog locationDialog;
     private Dialog internetDialog;
@@ -82,6 +82,8 @@ public class MapActivity extends AppCompatActivity implements UI, OnMapReadyCall
 
     private static final double OCEAN_LATITUDE = 48.8;//to move the map at random coordinates
     private static final double OCEAN_LONGITUDE = -25.1;//in case location can't be retrieved
+    //I saw the map shows blue before retrieving the location in the original app and I thought
+    //this would be a good way of simulating it
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -103,7 +105,7 @@ public class MapActivity extends AppCompatActivity implements UI, OnMapReadyCall
             }
         });
 
-        if(checkSelfPermission(FINE_LOCATION) != GRANTED) {
+        if(checkSelfPermission(FINE_LOCATION) != GRANTED) {//checking for permissions
             requestPermissions(new String[] {FINE_LOCATION}, REQUEST_LOCATION);
         }
 
@@ -114,7 +116,7 @@ public class MapActivity extends AppCompatActivity implements UI, OnMapReadyCall
             @Override
             public void onReceive(Context context, Intent intent) {
                 if (!internetEnabled()) {
-                    if(!isDialogActive(internetDialog)){
+                    if(!isDialogActive(internetDialog)){//same logic as in OnResume
                         showWarningDialog(REQUEST_INTERNET);
                     }
                 } else if(isDialogActive(internetDialog)) {
@@ -129,7 +131,7 @@ public class MapActivity extends AppCompatActivity implements UI, OnMapReadyCall
             @Override
             public void onReceive(Context context, Intent intent) {
                 if(!gpsEnabled()) {
-                    if(!isDialogActive(locationDialog)) {
+                    if(!isDialogActive(locationDialog)) {//same logic as in OnResume
                         showWarningDialog(REQUEST_LOCATION);
                     }
                 } else if(isDialogActive(locationDialog)) {
@@ -141,8 +143,9 @@ public class MapActivity extends AppCompatActivity implements UI, OnMapReadyCall
                 .PROVIDERS_CHANGED_ACTION));
 
         locationRequest = new LocationRequest();
-        locationRequest.setInterval(7 * ONE_SEC);
-        locationRequest.setFastestInterval(5 * ONE_SEC);
+        locationRequest.setInterval(7 * ONE_SEC);//we make an update every 7 seconds
+        locationRequest.setFastestInterval(5 * ONE_SEC);//an increase in these numbers would
+        //lead to faster battery consumption
         locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
 
         client = LocationServices.getFusedLocationProviderClient(this);
@@ -154,10 +157,11 @@ public class MapActivity extends AppCompatActivity implements UI, OnMapReadyCall
                 super.onLocationResult(locationResult);
                 Location location = locationResult.getLastLocation();
                 if(location != null){
-                    map.clear();
+                    map.clear();//delete all the previous markers
                     LatLng gps = new LatLng(location.getLatitude(), location.getLongitude());
                     drawMarker(gps);
-                    if(lastLocation == null){
+                    if(lastLocation == null){ //we only move the camera if we did not have a
+                        // previous valid location
                         map.moveCamera(CameraUpdateFactory.newLatLngZoom(gps, LOCATION_CAMERA_ZOOM));
                     }
                 }
@@ -166,6 +170,8 @@ public class MapActivity extends AppCompatActivity implements UI, OnMapReadyCall
         };
     }
 
+    //this method call is initiated by a call to the getMapAsync
+    //it initialises the map
     @Override
     public void onMapReady(GoogleMap googleMap) {
         map = googleMap;
@@ -181,7 +187,8 @@ public class MapActivity extends AppCompatActivity implements UI, OnMapReadyCall
                     gps = new LatLng(location.getLatitude(), location.getLongitude());
                     drawMarker(gps);
                 } else {
-                    gps = new LatLng(OCEAN_LATITUDE, OCEAN_LONGITUDE);
+                    gps = new LatLng(OCEAN_LATITUDE, OCEAN_LONGITUDE);//if we do not have
+                    //a location provided we set the camera in these default coordinates
                 }
                 map.moveCamera(CameraUpdateFactory.newLatLngZoom(gps, LOCATION_CAMERA_ZOOM));
             }
@@ -197,8 +204,8 @@ public class MapActivity extends AppCompatActivity implements UI, OnMapReadyCall
                     makeCall();
                 }
                 break;
-            case REQUEST_LOCATION:
-            case REQUEST_INTERNET:
+            case REQUEST_LOCATION://if these permissions are not granted we exit the activity
+            case REQUEST_INTERNET://as in the original version of the app
                 if(grantResults.length > 0 && grantResults[0] != GRANTED){
                     finish();
                 }
@@ -206,6 +213,7 @@ public class MapActivity extends AppCompatActivity implements UI, OnMapReadyCall
         }
     }
 
+    //we need all these following methods for displaying the map
     @Override
     protected void onDestroy() {
         mapView.onDestroy();
@@ -220,13 +228,16 @@ public class MapActivity extends AppCompatActivity implements UI, OnMapReadyCall
 
     @Override
     protected void onResume() {
+        //we have to check if the dialogs are not already shown, as the call to onResume
+        //along with the onReceive from the BroadcastReceivers may display the dialog twice
         if(!gpsEnabled() && !isDialogActive(locationDialog)) {
             showWarningDialog(REQUEST_LOCATION);
         }
         if (!internetEnabled() && !isDialogActive(internetDialog)) {
             showWarningDialog(REQUEST_INTERNET);
         }
-        if(map == null){
+        if(map == null){ // we have to check if the map did not lose its state
+            //for ex, if we exit the activity and then open it again
             mapView.getMapAsync(this);
         }
         mapView.onResume();
@@ -259,14 +270,18 @@ public class MapActivity extends AppCompatActivity implements UI, OnMapReadyCall
         super.onStop();
     }
 
+    //a dialog is null at the beginning of the activity, so we also have to check this
     private boolean isDialogActive(Dialog dialog) {
         return dialog != null && dialog.isShowing();
     }
 
+    //this metohod shows the warning (internet or gps inactive) dialog
     private void showWarningDialog(int requestCode) {
         Dialog dialog = new Dialog(this);
         dialog.setContentView(R.layout.gps_and_network_dialog);
         Window window = dialog.getWindow();
+        //again, we get the dimensions from the user, through the presenter, respecting the
+        //MVP structure
         window.setLayout(presenter.getDialogWidth(), WindowManager.LayoutParams.WRAP_CONTENT);
 
         TextView titleTv = (TextView) dialog.findViewById(R.id.warning_title_tv);
@@ -279,7 +294,8 @@ public class MapActivity extends AppCompatActivity implements UI, OnMapReadyCall
             title = getResources().getString(R.string.no_gps_title);
             message = getResources().getString(R.string.no_gps_message);
             settingsPath = Settings.ACTION_LOCATION_SOURCE_SETTINGS;
-            locationDialog = dialog;
+            locationDialog = dialog;//here we assign the dialog to one of the specific fields
+            //they will need to be checked if they are active by other methods
         } else {
             title = getResources().getString(R.string.no_internet_title);
             message = getResources().getString(R.string.no_internet_message);
@@ -300,13 +316,16 @@ public class MapActivity extends AppCompatActivity implements UI, OnMapReadyCall
         activateBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(settingsPath));
+                startActivity(new Intent(settingsPath));//we go to the specific activity in the
+                //settings (location or wi-fi)
             }
         });
         dialog.setCanceledOnTouchOutside(false);
         dialog.show();
     }
 
+    //this method is only called if the device is a phone, through the ring button
+    //it shows the dialog after pressing "Bel RSR nu"
     private void showCallDialog() {
         final Dialog dialog = new Dialog(this);
         dialog.setContentView(R.layout.call_dialog);
@@ -337,6 +356,7 @@ public class MapActivity extends AppCompatActivity implements UI, OnMapReadyCall
         dialog.show();
     }
 
+    //this method initiates the call to the RSR services
     private void makeCall() {
         String phoneNumber = getResources().getString(R.string.phone_number);
         if (checkSelfPermission(CALL_PHONE) == GRANTED) {
@@ -347,6 +367,7 @@ public class MapActivity extends AppCompatActivity implements UI, OnMapReadyCall
         }
     }
 
+    //here we draw the marker on the map on our location
     private void drawMarker(LatLng gps) {
         Geocoder geocoder = new Geocoder(this, Locale.getDefault());
         try {
@@ -362,14 +383,17 @@ public class MapActivity extends AppCompatActivity implements UI, OnMapReadyCall
         }
     }
 
+    //checks if we have internet connection
     private boolean internetEnabled() {
         return connectivityManager.getActiveNetwork() != null;
     }
 
+    //checks if gps is active
     private boolean gpsEnabled() {
         return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
     }
 
+    //initiates the continuous updates of the location in real time
     private void startLocationUpdates() {
         if(checkSelfPermission(FINE_LOCATION) == GRANTED){
             client.requestLocationUpdates(locationRequest, locationCallback, Looper.myLooper());
@@ -382,6 +406,8 @@ public class MapActivity extends AppCompatActivity implements UI, OnMapReadyCall
         client.removeLocationUpdates(locationCallback);
     }
 
+    //we only need the ring button if the device is a phone, this being the only UI difference
+    //for this activity
     public void loadPhone() {
         ringButton = (Button) findViewById(R.id.ring_button);
         ringButton.setOnClickListener(new View.OnClickListener() {
@@ -394,6 +420,7 @@ public class MapActivity extends AppCompatActivity implements UI, OnMapReadyCall
     }
 
     public void loadTablet() {
-
+        //we don't have anything different to do, but we have to write the method because we
+        //implement the UI interface
     }
 }

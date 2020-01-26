@@ -19,11 +19,13 @@ public class SplashScreen extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash_screen);
 
+        //here we pass the dimensions of the screen in order to determine the type of device
         DisplayMetrics displayMetrics = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
         presenter = new Presenter(displayMetrics.widthPixels, displayMetrics.heightPixels,
                 (double) displayMetrics.densityDpi);
 
+        //this makes the splash sleep for 3 seconds before opening the main activity
         Thread thread = new Thread() {
 
             @Override

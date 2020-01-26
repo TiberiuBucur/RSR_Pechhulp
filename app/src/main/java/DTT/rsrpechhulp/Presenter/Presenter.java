@@ -15,6 +15,7 @@ public class Presenter implements Serializable {
         user = new User(screenWidth, screenHeight, densityDpi);
     }
 
+    //the method for loading the user interface specific to the type of device
     public void loadUI(UI menu) {
         if (user.isTablet()) {
             menu.loadTablet();

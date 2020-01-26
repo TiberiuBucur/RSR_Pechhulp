@@ -10,6 +10,7 @@ import com.google.android.gms.maps.model.Marker;
 
 import DTT.rsrpechhulp.R;
 
+//the adapter for the info window that is displayed above the marker on the map
 public class CustomInfoWindowAdapter implements GoogleMap.InfoWindowAdapter {
 
     private final View window;
