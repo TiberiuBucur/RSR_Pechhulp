@@ -81,7 +81,7 @@ public class MainActivity extends AppCompatActivity implements UI {
                 dialog.dismiss();
             }
         });
-
+        dialog.setCanceledOnTouchOutside(false);
         dialog.show();
     }
 

@@ -6,8 +6,10 @@ import androidx.appcompat.widget.Toolbar;
 
 import android.Manifest;
 import android.app.Dialog;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -63,11 +65,14 @@ public class MapActivity extends AppCompatActivity implements UI, OnMapReadyCall
     private FusedLocationProviderClient client;
     private LocationRequest locationRequest;
     private LocationCallback locationCallback;
+    private Location lastLocation;
+    private Dialog locationDialog;
+    private Dialog internetDialog;
 
     private static final int REQUEST_CALL = 1;
     private static final int LOCATION_CAMERA_ZOOM = 16;
-    private static final int REQUEST_LOCATION = 2;
-    private static final int REQUEST_INTERNET = 3;
+    static final int REQUEST_LOCATION = 2;
+    static final int REQUEST_INTERNET = 3;
 
     private static final String FINE_LOCATION = Manifest.permission.ACCESS_FINE_LOCATION;
     private static final String CALL_PHONE = Manifest.permission.CALL_PHONE;
@@ -110,36 +115,61 @@ public class MapActivity extends AppCompatActivity implements UI, OnMapReadyCall
             requestPermissions(new String[] {FINE_LOCATION}, REQUEST_LOCATION);
         }
 
+        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+
+        BroadcastReceiver networkReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                if (!internetEnabled()) {
+                    if(internetDialog == null || !internetDialog.isShowing()){
+                        showWarningDialog(REQUEST_INTERNET);
+                    }
+                } else if(internetDialog != null && internetDialog.isShowing()) {
+                    internetDialog.dismiss();
+                }
+            }
+        };
+        this.registerReceiver(networkReceiver, new IntentFilter
+                (ConnectivityManager.CONNECTIVITY_ACTION));
+
+        BroadcastReceiver locationReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                if(!gpsEnabled()) {
+                    if(locationDialog == null || !locationDialog.isShowing()) {
+                        showWarningDialog(REQUEST_LOCATION);
+                    }
+                } else if(locationDialog != null && locationDialog.isShowing()) {
+                    locationDialog.dismiss();
+                }
+            }
+        };
+        this.registerReceiver(locationReceiver, new IntentFilter(LocationManager
+                .PROVIDERS_CHANGED_ACTION));
+
         locationRequest = new LocationRequest();
         locationRequest.setInterval(7 * ONE_SEC);
         locationRequest.setFastestInterval(5 * ONE_SEC);
         locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
 
         client = LocationServices.getFusedLocationProviderClient(this);
-        client.getLastLocation().addOnSuccessListener(this, new OnSuccessListener<Location>() {
-            @Override
-            public void onSuccess(Location location) {
-                drawMarker(location);
-            }
-        });
-
-        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-        connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-        if (!internetEnabled()) {
-            showWarningDialog(REQUEST_INTERNET);
-        } else {
-            if (!gpsEnabled()) {
-                showWarningDialog(REQUEST_LOCATION);
-            }
-        }
         mapView = (MapView) findViewById(R.id.mapView);
         mapView.onCreate(savedInstanceState);
-        mapView.getMapAsync(this);
         locationCallback = new LocationCallback(){
             @Override
             public void onLocationResult(LocationResult locationResult) {
                 super.onLocationResult(locationResult);
-                drawMarker(locationResult.getLastLocation());
+                Location location = locationResult.getLastLocation();
+                if(location != null){
+                    map.clear();
+                    LatLng gps = new LatLng(location.getLatitude(), location.getLongitude());
+                    drawMarker(gps);
+                    if(lastLocation == null){
+                        map.moveCamera(CameraUpdateFactory.newLatLngZoom(gps, LOCATION_CAMERA_ZOOM));
+                    }
+                }
+                lastLocation = location;
             }
         };
     }
@@ -149,6 +179,21 @@ public class MapActivity extends AppCompatActivity implements UI, OnMapReadyCall
         map = googleMap;
         map.setMapType(GoogleMap.MAP_TYPE_NORMAL);
         map.setInfoWindowAdapter(new CustomInfoWindowAdapter(MapActivity.this));
+        client.getLastLocation().addOnSuccessListener(this, new OnSuccessListener<Location>() {
+            @Override
+            public void onSuccess(Location location) {
+                LatLng gps;
+                map.clear();
+                lastLocation = location;
+                if(location != null){
+                    gps = new LatLng(location.getLatitude(), location.getLongitude());
+                    drawMarker(gps);
+                } else {
+                    gps = new LatLng(OCEAN_LATITUDE, OCEAN_LONGITUDE);
+                }
+                map.moveCamera(CameraUpdateFactory.newLatLngZoom(gps, LOCATION_CAMERA_ZOOM));
+            }
+        });
     }
 
     @Override
@@ -183,6 +228,15 @@ public class MapActivity extends AppCompatActivity implements UI, OnMapReadyCall
 
     @Override
     protected void onResume() {
+        if(!gpsEnabled() && (locationDialog == null || !locationDialog.isShowing())) {
+            showWarningDialog(REQUEST_LOCATION);
+        }
+        if (!internetEnabled() && (internetDialog == null || !internetDialog.isShowing())) {
+            showWarningDialog(REQUEST_INTERNET);
+        }
+        if(map == null){
+            mapView.getMapAsync(this);
+        }
         mapView.onResume();
         super.onResume();
         startLocationUpdates();
@@ -229,10 +283,12 @@ public class MapActivity extends AppCompatActivity implements UI, OnMapReadyCall
             title = getResources().getString(R.string.no_gps_title);
             message = getResources().getString(R.string.no_gps_message);
             settingsPath = Settings.ACTION_LOCATION_SOURCE_SETTINGS;
+            locationDialog = dialog;
         } else {
             title = getResources().getString(R.string.no_internet_title);
             message = getResources().getString(R.string.no_internet_message);
             settingsPath = Settings.ACTION_WIFI_SETTINGS;
+            internetDialog = dialog;
         }
         titleTv.setText(title);
         messageTv.setText(message);
@@ -251,9 +307,9 @@ public class MapActivity extends AppCompatActivity implements UI, OnMapReadyCall
                 startActivity(new Intent(settingsPath));
             }
         });
+        dialog.setCanceledOnTouchOutside(false);
         dialog.show();
     }
-
 
     private void showCallDialog() {
         final Dialog dialog = new Dialog(this);
@@ -281,7 +337,7 @@ public class MapActivity extends AppCompatActivity implements UI, OnMapReadyCall
                 dialog.dismiss();
             }
         });
-
+        dialog.setCanceledOnTouchOutside(false);
         dialog.show();
     }
 
@@ -295,22 +351,19 @@ public class MapActivity extends AppCompatActivity implements UI, OnMapReadyCall
         }
     }
 
-    private void drawMarker(Location location) {
+    private void drawMarker(LatLng gps) {
         Geocoder geocoder = new Geocoder(this, Locale.getDefault());
-        LatLng gps;
         try {
             List<Address> addresses = geocoder.getFromLocation(
-                    location.getLatitude(), location.getLongitude(), 1);
+                    gps.latitude, gps.longitude, 1);
             String address = addresses.get(0).getAddressLine(0);
             BitmapDescriptor icon = BitmapDescriptorFactory.fromResource(R.drawable.map_marker);
-            gps = new LatLng(location.getLatitude(), location.getLongitude());
             Marker marker = map.addMarker(new MarkerOptions().position(gps).
                     snippet(address).icon(icon));
             marker.showInfoWindow();
-        } catch (Exception e) {
-            gps = new LatLng(OCEAN_LATITUDE, OCEAN_LONGITUDE);
+        } catch (IOException e) {
+            e.printStackTrace();
         }
-        map.moveCamera(CameraUpdateFactory.newLatLngZoom(gps, LOCATION_CAMERA_ZOOM));
     }
 
     private boolean internetEnabled() {
